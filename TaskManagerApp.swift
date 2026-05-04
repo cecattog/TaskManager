@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct TaskManagerApp: App {
+    
+    init() {
+        FirebaseApp.configure()
+        print("✅Firebase configured")
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FirestoreTestView()
         }
     }
 }
