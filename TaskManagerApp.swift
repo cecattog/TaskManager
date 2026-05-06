@@ -7,25 +7,25 @@
 
 import SwiftUI
 import FirebaseCore
+import FirebaseAuth
 
 @main
 struct TaskManagerApp: App {
-    
-    @State private var isLoggedIn = false
+    @StateObject private var appState = AppState()
     
     init() {
         FirebaseApp.configure()
-        print("✅Firebase configured")
+        
     }
+    
     
     var body: some Scene {
         WindowGroup {
-            if isLoggedIn {
+            if appState.isLoggedIn {
                 TaskListView()
             } else {
-                LoginView(isLoggedIn: $isLoggedIn)
+                LoginView()
             }
-            
         }
     }
 }

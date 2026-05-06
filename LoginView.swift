@@ -10,10 +10,11 @@ import FirebaseCore
 import FirebaseAuth
 
 struct LoginView: View {
-    @Binding var isLoggedIn: Bool
+    
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var errorMessage = ""
+    @State private var isLoading = false
     
     var body: some View {
         VStack(spacing: 15) {
@@ -28,7 +29,7 @@ struct LoginView: View {
                 .font(.title2)
             
             Button("Login") {
-                login()
+                logIn()
             }
             .buttonStyle(.borderedProminent)
             .font(.title2)
@@ -36,6 +37,11 @@ struct LoginView: View {
             
             Text(errorMessage)
                 .foregroundColor(.red)
+            
+            if isLoading {
+                ProgressView()
+                    .padding()
+            }
             
             Button("Sign Up") {
                 signUp()
@@ -49,45 +55,52 @@ struct LoginView: View {
         
     }
     
-    
-    func login() {
-        
-        if email.isEmpty || password.isEmpty {
-            errorMessage = "Please enter your email and password to login."
-            return
-        }
-        
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if let error = error {
-                self.errorMessage = error.localizedDescription
-            } else {
-                self.isLoggedIn = true
-            }
-        }
-    }
-    
     func signUp() {
-        //Check for empty fields
-        
-        if email.isEmpty || password.isEmpty {
-            errorMessage = "Please fill in all fields."
+        guard !email.isEmpty, !password.isEmpty else {
+            errorMessage = "Please fill in all fields"
             return
         }
         
-        //Call FireBase
+        isLoading = true
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            isLoading = false
             if let error = error {
-                self.errorMessage = error.localizedDescription
-            } else {
-                self.isLoggedIn = true
+                errorMessage = error.localizedDescription
             }
         }
+        
+        
     }
     
     
+    
+    func logIn() {
+            guard !email.isEmpty, !password.isEmpty else {
+                errorMessage = "Please enter your email and password"
+                return
+            }
+            
+            isLoading = true
+            Auth.auth().signIn(withEmail: email, password: password) { result, error in
+                isLoading = false
+                if let error = error {
+                    errorMessage = error.localizedDescription
+                }
+            }
+        
+    
+    
 }
+    
+    
+  
+        
+      
+        
+        
+    }
+    
 
-#Preview {
-    LoginView(isLoggedIn: .constant(false))
-}
+    
+
 

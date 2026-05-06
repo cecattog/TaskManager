@@ -40,17 +40,31 @@ struct TaskListView: View {
                         .foregroundColor(.gray)
                     Spacer()
                 } else {
-                    List(viewModel.tasks) { task in
-                        HStack {
-                            Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                                .onTapGesture {
-                                    viewModel.toggleTask(task)
-                                }
-                            Text(task.title)
-                                .strikethrough(task.isCompleted)
+
+                    List {
+                        ForEach(viewModel.tasks) { task in
+                            HStack {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .onTapGesture {
+                                        viewModel.toggleTask(task)
+                                    }
+                                Text(task.title)
+                                    .strikethrough(task.isCompleted)
+                            }
+                        }
+                        .onDelete { indexSet in
+                            for index in indexSet {
+                                let task = viewModel.tasks[index]
+                                viewModel.deleteTask(task: task)
+                            }
                         }
                     }
+                    
+                    
                 }
+                
+                   
+                
             }
             .navigationTitle("My Tasks")
             .toolbar {

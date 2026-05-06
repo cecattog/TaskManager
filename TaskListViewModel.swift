@@ -89,4 +89,20 @@ class TaskListViewModel: ObservableObject {
     func cleanup() {
         listener?.remove()
     }
+    
+    func deleteTask(task: Task) {
+        guard let id = task.id else { return }
+        
+        db.collection( "tasks" ).document( id ).delete() { error in
+            if let error = error {
+                print("Error deleting document: \(error)")
+            } else {
+                print("Document deleted")
+            }
+        }
+        
+        
+        
+    }
+    
 }
